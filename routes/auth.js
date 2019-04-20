@@ -13,7 +13,7 @@ router.post("/saml", passport.authenticate("saml"), (req, res) => {
         user
     } = req;
 
-    user = enrichUser(user);
+    user = process.env.enrichUrl?enrichUser(user):user;
 
     let jwt = nJwt.create(user, Buffer.from(req.cookies["SignInSecret"], 'base64'));
     res.cookie('jwtUserCreds', jwt.compact());
@@ -22,9 +22,7 @@ router.post("/saml", passport.authenticate("saml"), (req, res) => {
 });
 
 function enrichUser(user) {
-    if (process.env.enrichUrl) {
-        // enrich
-    }
+    //TODO: enrichment
     return user;
 }
 
