@@ -21,6 +21,9 @@ const authConfig = () => ({
     lastName: process.env.PROFILE_EXTRACTOR_LAST_NAME || "email",
     mail: process.env.PROFILE_EXTRACTOR_MAIL || "email",
     displayName: process.env.PROFILE_EXTRACTOR_DISPLAY_NAME || "email"
+  },
+  enrichment:{
+    enrich:x=>x
   }
 });
 
