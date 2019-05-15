@@ -5,7 +5,7 @@ const nJwt = require("njwt");
 const authConfig = require("../authConfig");
 
 const {enrichment} = authConfig();
-//by default enrich is the identity function
+//by default enrich is the identity function if undefined
 const enrich = enrichment.enrich?enrichment.enrich:x=>x;
 const router = Router();
 
