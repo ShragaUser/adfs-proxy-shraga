@@ -5,6 +5,8 @@ const nJwt = require("njwt");
 const authConfig = require("../authConfig");
 
 const {enrichment} = authConfig();
+//by default enrich is the identity function
+const enrich = enrichment.enrich?enrichment.enrich:x=>x;
 const router = Router();
 
 router.get("/saml", passport.authenticate("saml"), (req, res) => {
@@ -16,8 +18,7 @@ router.post("/saml", passport.authenticate("saml"), (req, res) => {
         user
     } = req;
 
-    //by default enrich is the identity function
-    user = enrichment.enrich(user);
+    user = enrich(user);
 
     let jwt = nJwt.create(user, Buffer.from(req.cookies["SignInSecret"], 'base64'));
     res.cookie('jwtUserCreds', jwt.compact());
