@@ -15,12 +15,12 @@ router.get("/saml", passport.authenticate("saml"), (req, res) => {
     res.redirect("/");
 });
 
-router.post("/saml", passport.authenticate("saml"), (req, res) => {
+router.post("/saml", passport.authenticate("saml"), async (req, res) => {
     let {
         user
     } = req;
 
-    user = enrich(user);
+    user = await enrich(user);
 
     let jwt = nJwt.create(user, Buffer.from(req.cookies["SignInSecret"], 'base64'));
     res.cookie('jwtUserCreds', jwt.compact());
