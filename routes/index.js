@@ -2,10 +2,6 @@ var express = require('express');
 var router = express.Router();
 const axios = require("axios");
 
-router.get('/', function (req, res, next) {
-  axios.post(req.cookies["callbackURL"]).then(() => console.log('s')).catch((err) => console.error(err));
-});
-
 router.get('/setCallback/:callbackURL', function (req, res, next) {
   const {
     callbackURL
