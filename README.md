@@ -1,18 +1,26 @@
-# [Shraga](https://Shragajs.org/)
+# [Shraga](https://shragauser.github.io/adfs-proxy/)
 
-Shraga is a JavaScript library for building user interfaces.
+Shraga is a saml authentication proxy.
 
-----
-
-* **What:** Shraga makes it painless to create interactive UIs. Design simple views for each state in your application, and Shraga will efficiently update and render just the right components when your data changes. Declarative views make your code more predictable, simpler to understand, and easier to debug.
-
-----
-
-* **Why:** Build encapsulated components that manage their own state, then compose them to make complex UIs. Since component logic is written in JavaScript instead of templates, you can easily pass rich data through your app and keep state out of the DOM.
+Technology Stack:
+* SAML
+* passport.js
+* JWT
+* Express.js
 
 ----
 
-* **How:** We don't make assumptions about the rest of your technology stack, so you can develop new features in Shraga without rewriting existing code. Shraga can also render on the server using Node and power mobile apps using [Shraga Native](https://facebook.github.io/Shraga-native/).
+* **What:** Shraga makes it painless to authenticate applications over saml protocol.
+It standardizes the user profile returned from the saml-idp by following this [schema](https://tools.ietf.org/html/draft-smarr-vcarddav-portable-contacts-00).
+Additionally it allows enriching the user`s profile from other services before returning to your applications.
+
+----
+
+* **Why:** Prevents from reconfiguring your apps directly in the ADFS or the saml-idp over and over for every app, and provides a centrelized standardized "idp-proxy", and dealing with metadata.xml or relying party.
+
+----
+
+* **How:** Instead of configuring the authentication directly to your app you forward to adfs-proxy and after the user is authenticated he is redirected back to adfs-proxy and a JWT is returned to your app.
 
 
 ---
@@ -23,8 +31,8 @@ Shraga is a JavaScript library for building user interfaces.
 
 ### Development
 
-- Docker: ```run-docker```
-- local: run [SAML DOCKER] + npm i 
+- Docker: ```docker-compose -f "docker-compose.yml" up -d --build```
+- local: run [SAML DOCKER] + npm i + npm start 
 
 ### Production
 
@@ -34,7 +42,7 @@ Shraga is a JavaScript library for building user interfaces.
 
 
 ```
-code to use for saml and configuration
+TODO:code to use for saml and configuration
 ```
 
 ---
@@ -60,50 +68,11 @@ You can improve it by sending pull requests to [this repository](https://github.
 
 ---
 
-## Examples
-
-We have several examples [on the website](https://Shragajs.org/). Here is the first one to get you started:
-
-```jsx
-function HelloMessage({ name }) {
-  return <div>Hello {name}</div>;
-}
-
-ShragaDOM.render(
-  <HelloMessage name="Taylor" />,
-  document.getElementById('container')
-);
-```
-
-This example will render "Hello Taylor" into a container on the page.
-
-----
-
-You'll notice that we used an HTML-like syntax; [we call it JSX](https://Shragajs.org/docs/introducing-jsx.html). JSX is not required to use Shraga, but it makes code more readable, and writing it feels like writing HTML. If you're using Shraga as a `<script>` tag, read [this section](https://Shragajs.org/docs/add-Shraga-to-a-website.html#optional-try-Shraga-with-jsx) on integrating JSX; otherwise, the [recommended JavaScript toolchains](https://Shragajs.org/docs/create-a-new-Shraga-app.html) handle it automatically.
-
----
-
 ## Contributing
 
 The main purpose of this repository is to continue to evolve Shraga core, making it faster and easier to use. Development of Shraga happens in the open on GitHub, and we are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving Shraga.
 
 ---
-
-### [Code of Conduct](https://code.fb.com/codeofconduct)
-
-Facebook has adopted a Code of Conduct that we expect project participants to adhere to. Please read [the full text](https://code.fb.com/codeofconduct) so that you can understand what actions will and will not be tolerated.
-
----
-
-### [Contributing Guide](https://Shragajs.org/contributing/how-to-contribute.html)
-
-Read our [contributing guide](https://Shragajs.org/contributing/how-to-contribute.html) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Shraga.
-
----
-
-### Good First Issues
-
-To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/facebook/Shraga/labels/good%20first%20issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
 
 ### License
 
