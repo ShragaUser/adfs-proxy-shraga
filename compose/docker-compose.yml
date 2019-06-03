@@ -1,0 +1,24 @@
+version: '2.1'
+
+services:
+  testsamlidp_idp:
+    image: kristophjunge/test-saml-idp
+    environment:
+      SIMPLESAMLPHP_SP_ENTITY_ID: http://localhost:3000/metadata.xml
+      SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE: http://localhost:3000/auth/saml
+      SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE: http://localhost/simplesaml/module.php/saml/sp/saml2-logout.php/test-sp
+      SAML_ISSUER: http://localhost:3000/metadata.xml
+      SAML_CALLBACK_URL: http://localhost:3000/auth/saml/callback
+      SIMPLESAMLPHP_ADMIN_PASSWORD: test
+      SIMPLESAMLPHP_SECRET_SALT: salt
+    ports:
+    - "8080:8080"
+    - "8443:8443"
+  shraga-proxy:
+    environment: 
+      MONGODB_URL: mongodb://localhost:27017
+      MONGODB_NAME: shragaproxy
+      SESSION_SECRET: 123
+    image: shragauser/shraga-proxy
+    ports:
+     - 3000:3000
