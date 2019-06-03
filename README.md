@@ -47,27 +47,6 @@ TODO:code to use for saml and configuration
 
 ---
 
-## Documentation
-
-You can find the Shraga documentation [on the website](https://Shragajs.org/docs).  
-
-Check out the [Getting Started](https://Shragajs.org/docs/getting-started.html) page for a quick overview.
-
-----
-
-The documentation is divided into several sections:
-
-* [Tutorial](https://Shragajs.org/tutorial/tutorial.html)
-* [Main Concepts](https://Shragajs.org/docs/hello-world.html)
-* [Advanced Guides](https://Shragajs.org/docs/jsx-in-depth.html)
-* [API Reference](https://Shragajs.org/docs/Shraga-api.html)
-* [Where to Get Support](https://Shragajs.org/community/support.html)
-* [Contributing Guide](https://Shragajs.org/docs/how-to-contribute.html)
-
-You can improve it by sending pull requests to [this repository](https://github.com/Shragajs/Shragajs.org).
-
----
-
 ## Contributing
 
 The main purpose of this repository is to continue to evolve Shraga core, making it faster and easier to use. Development of Shraga happens in the open on GitHub, and we are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving Shraga.
