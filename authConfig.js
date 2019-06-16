@@ -19,11 +19,22 @@ const authConfig = () => ({
     id: process.env.PROFILE_EXTRACTOR_ID || "uid",
     firstName: process.env.PROFILE_EXTRACTOR_FIRST_NAME || "email",
     lastName: process.env.PROFILE_EXTRACTOR_LAST_NAME || "email",
-    mail: process.env.PROFILE_EXTRACTOR_MAIL || "email",
+    email: process.env.PROFILE_EXTRACTOR_MAIL || "email",
     displayName: process.env.PROFILE_EXTRACTOR_DISPLAY_NAME || "email"
   },
-  enrichment:{
-    enrich:x=>x,
+  enrichment: {
+    enrich: async x => {
+      const { id, firstName, lastName, email, displayName } = x;
+      const name = { firstName, lastName };
+      let provider = "ADFS";
+      return {
+        id,
+        name,
+        email,
+        displayName,
+        provider
+      };
+    }
     //ideally after enrichment user should be similar to this schema:
     //     provider {String}
     // The provider with which the user authenticated (facebook, twitter, etc.).
