@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const MongoClient = require("mongodb").MongoClient;
 const passport = require("passport");
@@ -38,6 +39,7 @@ async function initApp() {
   });
 
   app.use(helmet());
+  app.use(cors());
   app.use(logger("tiny"));
   app.use(compression());
   app.use(cookieParser());
