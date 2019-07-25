@@ -2,7 +2,7 @@ def CONTAINER_NAME="shraga-proxy"
 def CONTAINER_TAG="latest"
 def DOCKER_HUB_USER="XYZ"
 def PORT="8080"
-
+//delete me - check for webhook
 node('jenkins-build-slave') {
 
     stage('Initialize'){
