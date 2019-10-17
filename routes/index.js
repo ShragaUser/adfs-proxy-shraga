@@ -7,11 +7,17 @@ router.get('/setCallback/:callbackURL', function (req, res, next) {
     callbackURL
   } = req.params;
   const {
-    SignInSecret
+    SignInSecret,
+    useEnrichId
   } = req.query;
 
   res.cookie("callbackURL", callbackURL);
   res.cookie("SignInSecret", SignInSecret);
+
+  if(useEnrichId) {
+    res.cookie("useEnrichId", useEnrichId);
+  }
+
   res.status(200).redirect('/auth/saml');
 });
 

@@ -23,7 +23,7 @@ const authConfig = () => ({
     displayName: process.env.PROFILE_EXTRACTOR_DISPLAY_NAME || "email"
   },
   enrichment: {
-    enrich: async x => {
+    enrich: async (x, useEnrichId) => {
       const { id, firstName, lastName, email, displayName } = x;
       const name = { firstName, lastName };
       let provider = "ADFS";

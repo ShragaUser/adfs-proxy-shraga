@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -24,6 +24,6 @@
     "secure-random": "^1.1.1"
   },
   "devDependencies": {
-    "nodemon": "^1.18.11"
+    "nodemon": "^1.19.4"
   }
 }
