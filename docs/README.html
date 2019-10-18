@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>reveal-md</title>
+    <link rel="stylesheet" href="./css/reveal.css" />
+    <link rel="stylesheet" href="./css/theme/black.css" id="theme" />
+    <link rel="stylesheet" href="./css/highlight/zenburn.css" />
+    <link rel="stylesheet" href="./css/print/paper.css" type="text/css" media="print" />
 
-  <title>reveal-md</title>
-  <link rel="stylesheet" href="./css/reveal.css" />
-  <link rel="stylesheet" href="./css/theme/black.css" id="theme" />
-  <link rel="stylesheet" href="./css/highlight/zenburn.css" />
-  <link rel="stylesheet" href="./css/print/paper.css" type="text/css" media="print" />
-
-</head>
-
-<body>
-  <div class="reveal">
-    <div class="slides">
-      <section>
-        <section data-markdown>
-          <script type="text/template"># [Shraga](https://shragauser.github.io/adfs-proxy-shraga/)
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides"><section ><section data-markdown><script type="text/template"># [Shraga](https://shragauser.github.io/adfs-proxy-shraga/)
 
 Shraga is a saml authentication proxy.
 
@@ -27,41 +22,21 @@ Technology Stack:
 * passport.js
 * JWT
 * Express.js
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">
+</script></section><section data-markdown><script type="text/template">
 * **What:** Shraga makes it painless to authenticate applications over saml protocol.
 It standardizes the user profile returned from the saml-idp by following this [schema](https://tools.ietf.org/html/draft-smarr-vcarddav-portable-contacts-00).
 Additionally it allows enriching the user`s profile from other services before returning to your applications.
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">
+</script></section><section data-markdown><script type="text/template">
 * **Why:** Prevents from reconfiguring your apps directly in the ADFS or the saml-idp over and over for every app, and provides a centrelized standardized "idp-proxy", and dealing with metadata.xml or relying party.
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">
+</script></section><section data-markdown><script type="text/template">
 * **How:** Instead of configuring the authentication directly to your app you forward to adfs-proxy and after the user is authenticated he is redirected back to adfs-proxy and a JWT is returned to your app.
 
-</script>
-        </section>
-      </section>
-      <section>
-        <section data-markdown>
-          <script type="text/template">
+</script></section></section><section ><section data-markdown><script type="text/template">
 ## Setup
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">#### Dependencies:
+</script></section><section data-markdown><script type="text/template">#### Dependencies:
 * ADFS must be enabled and running. in development a sample SAML-idp can be used - [saml-idp docker](https://github.com/kristophjunge/docker-test-saml-idp).
 * [MongoDB](https://www.mongodb.com/) instance must be provided via .env or docker-compose variables ( for session management)
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">
+</script></section><section data-markdown><script type="text/template">
 #### Easy-Setup:
 use image based docker-compose that creates a Plug-and-Play saml-idp and the adfs-proxy (Shraga) on a single container. 
 
@@ -69,16 +44,10 @@ use image based docker-compose that creates a Plug-and-Play saml-idp and the adf
 cd  ./compose
 docker-compose -f "docker-compose.yml" up -d --build
 ```
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">
+</script></section><section data-markdown><script type="text/template">
 #### Manual-Setup:
 you must connect Shraga to a SAML-IDP. this can be an Enterprise ADFS in an inside organization or via a local development saml-idp as shown in the dependecies doc.
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">
+</script></section><section data-markdown><script type="text/template">
 #### Docker:
 
  ```
@@ -86,10 +55,7 @@ you must connect Shraga to a SAML-IDP. this can be an Enterprise ADFS in an insi
  ```
 
  change environment variables in the docker-compose.yml to your needs. 
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">#### Local: 
+</script></section><section data-markdown><script type="text/template">#### Local: 
 create .env file containing the following configurations
 
 if no .env file exists default values will be used.
@@ -114,10 +80,7 @@ PROFILE_EXTRACTOR_LAST_NAME
 PROFILE_EXTRACTOR_MAIL
 PROFILE_EXTRACTOR_DISPLAY_NAME
 ```
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">
+</script></section><section data-markdown><script type="text/template">
 ### Enrichment
 In order to incorporate enrichment to the user profile recieved from the saml-idp you need to edit the "authConfig.js" file and write a function to replace the "enrich" function.
 
@@ -126,28 +89,20 @@ default function is an identity function:
 enrich: x=>x;
 ```
 enrich can be a sync/async function and will allways be dealt with "await". 
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">
-### SAMLResponseManipulation
+</script></section><section data-markdown><script type="text/template">
+### SAML-Response Manipulation
 If usage of the SAML IDP SAMLResponse is needed ( ie. ADFS SAMLRespone Form Data in HTML POST):
 
 
-Send initial request to /setCallback with param useADFS=true (```?useADFS=true```).
+Send initial request to /setCallback with param 'useADFS=true'.
 
 If useADFS is sent adfs-proxy-shraga will return the SAMLResponse to given callbackURL.
-</script>
-        </section>
-      </section>
-      <section>
-        <section data-markdown>
-          <script type="text/template">
+</script></section><section data-markdown><script type="text/template">
 #### Manipulating SAML Claims
 
 SAML Claims can be changed before being sent back to client ( callbackURL ).
 
-in authConfig: configure ```samlResponseModifier```.
+in authConfig: configure ```samlResponseModifier```
 
 ```samlResponseModifier``` is a map of Claim names to Manipulation Functions. 
 
@@ -159,28 +114,14 @@ For Example:
     "email": async (originalValue) => "not Original value"
   }
 ```
-
-Function can be async or synchronous and will be treated with async handlers either way. 
-
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">### Run Server: 
+</script></section><section data-markdown><script type="text/template">### Run Server: 
 ```
 run: npm start
 ```
 
-</script>
-        </section>
-      </section>
-      <section>
-        <section data-markdown>
-          <script type="text/template">
+</script></section></section><section ><section data-markdown><script type="text/template">
 ## Application Implementation
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">### passport-shraga
+</script></section><section data-markdown><script type="text/template">### passport-shraga
 
 [passport-shraga](https://github.com/ShragaUser/passport-shraga) is a [passport.js](http://www.passportjs.org/) authentication strategy that utilizes Shraga as an saml-idp proxy. 
 
@@ -188,10 +129,7 @@ it is also availabe as an npm module and can ve installed using:
 ```
 npm i --save passport-shraga
 ```
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">### passport.js
+</script></section><section data-markdown><script type="text/template">### passport.js
 
 usage of passport-shraga is as followed:
 
@@ -212,79 +150,66 @@ passport.use(new Strategy({}, (profile, done) => {
     done(null, profile);
 }))
 ```
-</script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">### shraga-example
+</script></section><section data-markdown><script type="text/template">### shraga-example
 
 [shraga-example](https://github.com/ShragaUser/shraga-example) is an End-2-End implementation of an express.js app using [passport-shraga](https://github.com/ShragaUser/passport-shraga) to authenticate users via Shraga (adfs-proxy). 
 
 It can be used as a reference point for configuring an app to use Shraga.
-</script>
-        </section>
-      </section>
-      <section data-markdown>
-        <script type="text/template">
+</script></section></section><section  data-markdown><script type="text/template">
 ## Contributing
 
 The main purpose of this repository is to continue to evolve Shraga core, making it faster and easier to use. Development of Shraga happens in the open on GitHub, and we are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving Shraga.
-</script>
-      </section>
-      <section data-markdown>
-        <script type="text/template">
+</script></section><section  data-markdown><script type="text/template">
 ### License
 
-Shraga is [MIT licensed](./LICENSE).</script>
-      </section>
+Shraga is [MIT licensed](./LICENSE).</script></section></div>
     </div>
-  </div>
 
-  <script src="./js/reveal.js"></script>
+    <script src="./js/reveal.js"></script>
 
-  <script>
-    function extend() {
-      var target = {};
-      for (var i = 0; i < arguments.length; i++) {
-        var source = arguments[i];
-        for (var key in source) {
-          if (source.hasOwnProperty(key)) {
-            target[key] = source[key];
+    <script>
+      function extend() {
+        var target = {};
+        for (var i = 0; i < arguments.length; i++) {
+          var source = arguments[i];
+          for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+              target[key] = source[key];
+            }
           }
         }
+        return target;
       }
-      return target;
-    }
 
-    // Optional libraries used to extend on reveal.js
-    var deps = [
-      { src: './plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
-      { src: './plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
-      { src: './plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
-      { src: './plugin/zoom-js/zoom.js', async: true },
-      { src: './plugin/notes/notes.js', async: true },
-      { src: './plugin/math/math.js', async: true }
-    ];
+      // Optional libraries used to extend on reveal.js
+      var deps = [
+        { src: './plugin/markdown/marked.js', condition: function() { return !!document.querySelector('[data-markdown]'); } },
+        { src: './plugin/markdown/markdown.js', condition: function() { return !!document.querySelector('[data-markdown]'); } },
+        { src: './plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: './plugin/zoom-js/zoom.js', async: true },
+        { src: './plugin/notes/notes.js', async: true },
+        { src: './plugin/math/math.js', async: true }
+      ];
 
-    // default options to init reveal.js
-    var defaultOptions = {
-      controls: true,
-      progress: true,
-      history: true,
-      center: true,
-      transition: 'default', // none/fade/slide/convex/concave/zoom
-      dependencies: deps
-    };
+      // default options to init reveal.js
+      var defaultOptions = {
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        dependencies: deps
+      };
 
-    // options from URL query string
-    var queryOptions = Reveal.getQueryHash() || {};
+      // options from URL query string
+      var queryOptions = Reveal.getQueryHash() || {};
 
-    var options = extend(defaultOptions, {}, queryOptions);
-  </script>
+      var options = extend(defaultOptions, {}, queryOptions);
+    </script>
 
 
-  <script>
-    Reveal.initialize(options);
-  </script>
-</body>
-
+    <script>
+      Reveal.initialize(options);
+    </script>
+  </body>
 </html>

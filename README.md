@@ -97,21 +97,21 @@ enrich can be a sync/async function and will allways be dealt with "await".
 
 ----
 
-### SAMLResponseManipulation
+### SAML-Response Manipulation
 If usage of the SAML IDP SAMLResponse is needed ( ie. ADFS SAMLRespone Form Data in HTML POST):
 
 
-Send initial request to /setCallback with param useADFS=true (```?useADFS=true```).
+Send initial request to /setCallback with param 'useADFS=true'.
 
 If useADFS is sent adfs-proxy-shraga will return the SAMLResponse to given callbackURL.
 
----
+----
 
 #### Manipulating SAML Claims
 
 SAML Claims can be changed before being sent back to client ( callbackURL ).
 
-in authConfig: configure ```samlResponseModifier```.
+in authConfig: configure ```samlResponseModifier```
 
 ```samlResponseModifier``` is a map of Claim names to Manipulation Functions. 
 
@@ -123,9 +123,6 @@ For Example:
     "email": async (originalValue) => "not Original value"
   }
 ```
-
-Function can be async or synchronous and will be treated with async handlers either way. 
-
 
 ----
 ### Run Server: 
