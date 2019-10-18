@@ -1,4 +1,4 @@
-# [Shraga](https://shragauser.github.io/adfs-proxy/)
+# [Shraga](https://shragauser.github.io/adfs-proxy-shraga/)
 
 Shraga is a saml authentication proxy.
 
