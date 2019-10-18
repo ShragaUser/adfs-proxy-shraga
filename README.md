@@ -107,6 +107,16 @@ If useADFS is sent adfs-proxy-shraga will return the SAMLResponse to given callb
 
 ----
 
+#### If using passport-saml
+
+if using [passport-saml](https://github.com/bergie/passport-saml) make sure to set {entryPoint} to be: 
+
+```
+const entryPoint = `${ADFS-PROXY-URL}/setCallback/${encodeURIComponent(SAML_CALLBACK_URL)}?useADFS=true`
+```
+
+----
+
 #### Manipulating SAML Claims
 
 SAML Claims can be changed before being sent back to client ( callbackURL ).
