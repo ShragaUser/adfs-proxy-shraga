@@ -89,6 +89,34 @@ default function is an identity function:
 enrich: x=>x;
 ```
 enrich can be a sync/async function and will allways be dealt with "await". 
+</script></section><section data-markdown><script type="text/template">
+### SAMLResponseManipulation
+If usage of the SAML IDP SAMLResponse is needed ( ie. ADFS SAMLRespone Form Data in HTML POST):
+
+
+Send initial request to /setCallback with param useADFS=true (```?useADFS=true```).
+
+If useADFS is sent adfs-proxy-shraga will return the SAMLResponse to given callbackURL.
+</script></section></section><section ><section data-markdown><script type="text/template">
+#### Manipulating SAML Claims
+
+SAML Claims can be changed before being sent back to client ( callbackURL ).
+
+in authConfig: configure ```samlResponseModifier```.
+
+```samlResponseModifier``` is a map of Claim names to Manipulation Functions. 
+
+For Example:
+
+```
+  samlResponseModifier: {
+    "uid": async (originalValue) => originalValue,
+    "email": async (originalValue) => "not Original value"
+  }
+```
+
+Function can be async or synchronous and will be treated with async handlers either way. 
+
 </script></section><section data-markdown><script type="text/template">### Run Server: 
 ```
 run: npm start
@@ -140,7 +168,6 @@ The main purpose of this repository is to continue to evolve Shraga core, making
 Shraga is [MIT licensed](./LICENSE).</script></section></div>
     </div>
 
-    <script src="./lib/js/head.min.js"></script>
     <script src="./js/reveal.js"></script>
 
     <script>
@@ -159,7 +186,6 @@ Shraga is [MIT licensed](./LICENSE).</script></section></div>
 
       // Optional libraries used to extend on reveal.js
       var deps = [
-        { src: './lib/js/classList.js', condition: function() { return !document.body.classList; } },
         { src: './plugin/markdown/marked.js', condition: function() { return !!document.querySelector('[data-markdown]'); } },
         { src: './plugin/markdown/markdown.js', condition: function() { return !!document.querySelector('[data-markdown]'); } },
         { src: './plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },

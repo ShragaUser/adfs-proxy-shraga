@@ -3,13 +3,10 @@ const passport = require("passport");
 const nJwt = require("njwt");
 const xmldom = require('xmldom');
 const fromDataCreator = require("form-data");
-const axios = require("axios");
 
 const authConfig = require("../authConfig");
 
-const {
-    enrichment
-} = authConfig();
+const { enrichment, attributeTagName, samlResponseModifier } = authConfig();
 //by default enrich is the identity function if undefined
 const enrich = enrichment.enrich ? enrichment.enrich : x => x;
 const router = Router();
@@ -39,24 +36,25 @@ router.post("/saml", passport.authenticate("saml"), async (req, res, next) => {
     const xml = Buffer.from(SAMLResponse, 'base64').toString('utf8');
     const dom = new xmldom.DOMParser().parseFromString(xml);
 
-    const getToNodeValueAndAssignNewValue = (initialNode, newValue) => {
+    const getToNodeValueAndAssignNewValue = async (initialNode, newValueFunc) => {
         while (!initialNode.nodeValue) {
             initialNode = initialNode.childNodes[0];
         }
 
         const { parentNode } = initialNode;
         parentNode.removeChild(initialNode);
+        const newValue = await newValueFunc(initialNode.nodeValue);
         const newElm = dom.createTextNode(newValue);
         parentNode.appendChild(newElm);
+        return true;
     }
 
-    const attributes = dom.getElementsByTagName("saml:Attribute");
+    const attributes = dom.getElementsByTagName(attributeTagName);
     for (let attributeIndex = 0; attributeIndex < attributes.length; attributeIndex++) {
-        if (attributes[attributeIndex].getAttribute("Name") === "uid") {
-            getToNodeValueAndAssignNewValue(attributes[attributeIndex], 2);
-        }
-        if (attributes[attributeIndex].getAttribute("Name") === "email") {
-            getToNodeValueAndAssignNewValue(attributes[attributeIndex], "doodido");
+        for (let attribute in samlResponseModifier) {
+            if (attributes[attributeIndex].getAttribute("Name") === attribute) {
+                await getToNodeValueAndAssignNewValue(attributes[attributeIndex], samlResponseModifier[attribute]);
+            }
         }
     }
 
