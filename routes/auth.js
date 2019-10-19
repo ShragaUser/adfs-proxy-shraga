@@ -25,6 +25,11 @@ const dealWithCallback = async (req, res, next) => {
 
     const enrichedUser = await enrich(user, req.cookies.useEnrichId);
 
+    const RelayState = req.cookies["RelayState"];
+    if (RelayState) {
+        enrichedUser.RelayState = RelayState;
+    }
+
     let jwt = nJwt.create(enrichedUser, Buffer.from(req.cookies["SignInSecret"], 'base64'));
     res.cookie('jwtUserCreds', jwt.compact());
 
@@ -63,6 +68,11 @@ const dealWithSAMLuseADFSCallback = async (req, res, next) => {
 
     const fromData = new fromDataCreator();
     fromData.append("SAMLResponse", newXml);
+
+    const RelayState = req.cookies["RelayState"];
+    if (RelayState) {
+        fromData.append("RelayState", RelayState);
+    }
 
     const htlmResponse = createHTMLResponse(newXml, req.cookies["callbackURL"]);
 
