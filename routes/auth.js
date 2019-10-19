@@ -15,7 +15,8 @@ router.get("/saml", passport.authenticate("saml"), (req, res) => {
     res.redirect("/");
 });
 
-router.post("/saml", passport.authenticate("saml"), async (req, res, next) => {
+
+const dealWithCallback = async (req, res, next) => {
     if (req.cookies["useADFS"]) {
         return next();
     }
@@ -28,10 +29,9 @@ router.post("/saml", passport.authenticate("saml"), async (req, res, next) => {
     res.cookie('jwtUserCreds', jwt.compact());
 
     res.redirect(307, `${req.cookies["callbackURL"]}/?jwt=${jwt.compact()}`);
+};
 
-});
-
-router.post("/saml", passport.authenticate("saml"), async (req, res, next) => {
+const dealWithSAMLuseADFSCallback = async (req, res, next) => {
     const { SAMLResponse } = req.body;
     const xml = Buffer.from(SAMLResponse, 'base64').toString('utf8');
     const dom = new xmldom.DOMParser().parseFromString(xml);
@@ -67,8 +67,7 @@ router.post("/saml", passport.authenticate("saml"), async (req, res, next) => {
     const htlmResponse = createHTMLResponse(newXml, req.cookies["callbackURL"]);
 
     res.status(200).send(htlmResponse);
-});
-
+};
 
 const createHTMLResponse = (SAMLResponse, callbackURL) => {
     const response =
@@ -85,6 +84,19 @@ const createHTMLResponse = (SAMLResponse, callbackURL) => {
 
     return response;
 }
+
+
+router.post("/saml", passport.authenticate("saml"), dealWithCallback);
+
+router.post("/saml", passport.authenticate("saml"), dealWithSAMLuseADFSCallback);
+
+// to adhere to ADFS standards - not allways relavent.
+router.post("/saml/callback", passport.authenticate("saml"), dealWithCallback);
+
+router.post("/saml/callback", passport.authenticate("saml"), dealWithSAMLuseADFSCallback);
+
+
+
 
 
 module.exports = router;
