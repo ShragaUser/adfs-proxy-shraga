@@ -13,14 +13,25 @@ router.get('/setCallback/:callbackURL', function (req, res, next) {
   } = req.query;
 
   res.cookie("callbackURL", callbackURL);
+
   res.cookie("SignInSecret", SignInSecret);
 
-  if(useEnrichId) {
-    res.cookie("useEnrichId", useEnrichId);
+  if (SignInSecret) {
+    res.cookie("SignInSecret", SignInSecret);
+  } else {
+    res.clearCookie("SignInSecret");
   }
 
-  if(useADFS) {
+  if (useEnrichId) {
+    res.cookie("useEnrichId", useEnrichId);
+  } else {
+    res.clearCookie("useEnrichId");
+  }
+
+  if (useADFS) {
     res.cookie("useADFS", useADFS);
+  } else {
+    res.clearCookie("useADFS");
   }
 
   res.status(200).redirect('/auth/saml');
