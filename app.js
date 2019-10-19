@@ -37,7 +37,8 @@ async function initApp() {
       )
     );
   });
-
+  
+  app.use(express.static('docs'));
   app.use(helmet());
   app.use(cors());
   app.use(logger("tiny"));
