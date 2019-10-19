@@ -143,6 +143,22 @@ run: npm start
 
 ---
 
+## Optional Params
+
+----
+
+  ```SignInSecret```: When using Shraga as a jwt IDP then SignInSecret is a MUST HAVE parameter. This is a base64 encoded secret to sign jwt object with.
+
+  ```useEnrichId```: When using Shraga as a jwt IDP then if 'useEnrichId' is truthy then the 'id' property of the user profile will be changed to the id recieved from the 'enrich' function. ( useEnrichId value will be sent to enrich function - behaviour is decided by the function ).
+
+----
+
+  ```useADFS```: If useADFS is truthy then Shraga will return the SAMLReponse ( modified by Shraga - explanation above ) directly to 'callbackUrl'. jwt will not be used.
+
+  ```RelayState```: RelayState value will be added to SAMLResponse Form Data if useADFS is truthy and be added to jwtBody otherwise. if RelayState is undefined value will not be added at all.
+
+---
+
 ## Application Implementation
 
 ----
