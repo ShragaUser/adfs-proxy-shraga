@@ -66,25 +66,19 @@ const dealWithSAMLuseADFSCallback = async (req, res, next) => {
     const newSerializedXml = new xmldom.XMLSerializer().serializeToString(dom);
     const newXml = Buffer.from(newSerializedXml, 'utf8').toString('base64');
 
-    const fromData = new fromDataCreator();
-    fromData.append("SAMLResponse", newXml);
-
     const RelayState = req.cookies["RelayState"];
-    if (RelayState) {
-        fromData.append("RelayState", RelayState);
-    }
-
-    const htlmResponse = createHTMLResponse(newXml, req.cookies["callbackURL"]);
+    const htlmResponse = createHTMLResponse(newXml, req.cookies["callbackURL"], RelayState);
 
     res.status(200).send(htlmResponse);
 };
 
-const createHTMLResponse = (SAMLResponse, callbackURL) => {
+const createHTMLResponse = (SAMLResponse, callbackURL, RelayState) => {
     const response =
         `<html>
             <body>
                 <form method="POST" name="hiddenform" action="${callbackURL}">
                     <input type="hidden" name="SAMLResponse" value="${SAMLResponse}" />
+                    ${ RelayState ? `<input type="hidden" name="RelayState" value="${RelayState}" />` : ''}
                 </form>
                 <script language="javascript">
                     window.setTimeout('document.forms[0].submit()',0);
