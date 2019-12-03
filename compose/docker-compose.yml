@@ -14,6 +14,9 @@ services:
     ports:
     - "8080:8080"
     - "8443:8443"
+    volumes:
+      - ./users.php:/var/www/simplesamlphp/config/authsources.php
+
   shraga-proxy:
     environment: 
       MONGODB_URL: mongodb://mongo-shraga:27017
