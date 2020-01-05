@@ -28,6 +28,8 @@ const authConfig = () => {
     },
     samlResponseModifier,
     attributeTagName: process.env.ATTRIBUTE_TAG || "saml:Attribute",
+    samlCallbackUrlTag: process.env.SAML_CALLBACK_URL_TAG || "samlp:AuthnRequest",
+    samlCallbackAttributeName: process.env.SAML_CALLBACK_ATTRIBUTE_NAME || 'AssertionConsumerServiceURL',
     enrichment: {
       enrich: async (x, useEnrichId) => {
         const { id, firstName, lastName, email, displayName } = x;
