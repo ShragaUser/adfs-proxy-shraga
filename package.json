@@ -6,7 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "bouncy": "^3.2.2",
     "compression": "^1.7.4",
     "connect-mongo": "^2.0.3",
