@@ -4,7 +4,8 @@ const R = require('ramda');
 const xmldom = require('xmldom');
 const { promisify } = require('util');
 const { trycatch } = require('../utils/util');
-const { samlCallbackUrlTag, samlCallbackAttributeName } = require("../authConfig")();
+const { samlCallbackUrlTag, samlCallbackAttributeName, saml } = require("../authConfig")();
+const { entryPoint } = saml;
 const router = express.Router();
 
 const clearCookies = res => {
@@ -69,25 +70,54 @@ const getCallbackUrlFromXML = xmlString => {
   return null;
 }
 
+
+const handleSAMLRequest = async (req, res) => {
+  const getSamlRequestXMLString = trycatch(R.pipeWith(R.then, [getBufferFromBase64, getZlibInflatedBuffer, utf8FromBuffer]));
+  const { error, result: samlRequestXMLString } = await getSamlRequestXMLString(req.query.SAMLRequest);
+  if (error) {
+    return res.status(500).send('Cannot Parse SAMLRequest');
+  }
+  if (samlRequestXMLString) {
+    const callbackURL = getCallbackUrlFromXML(samlRequestXMLString);
+    if (callbackURL) {
+      res.cookie("callbackURL", callbackURL);
+      res.cookie("useADFS", true);
+      return res.status(200).redirect('/auth/saml');
+    }
+    return res.status(500).send('Cannot Establish Callback URL');
+  }
+};
+
+
+const getQueryStringFromQuery = query => {
+  let queryString = '?';
+  for (let param in query) {
+    queryString += `${param}=${query[param]}&`;
+  }
+  return queryString;
+};
+
+const handleWsFedRequest = async (req, res) => {
+  const { wtrealm: callbackURL } = req.query;
+  res.cookie("callbackURL", callbackURL);
+  const wtrealmCallbackUrl = `${req.protocol}://${req.get("host")}/auth/saml/callback`;
+  const query = { ...req.query, wtrealm: wtrealmCallbackUrl };
+  const queryString = getQueryStringFromQuery(query);
+  return res.redirect(`${entryPoint}${queryString}`);
+};
+
 router.get('/saml', async (req, res, next) => {
   clearCookies(res);
 
   if (req.query && req.query.SAMLRequest) {
-    const getSamlRequestXMLString = trycatch(R.pipeWith(R.then, [getBufferFromBase64, getZlibInflatedBuffer, utf8FromBuffer]));
-    const { error, result: samlRequestXMLString } = await getSamlRequestXMLString(req.query.SAMLRequest);
-    if (error) {
-      return res.status(500).send('Cannot Parse SAMLRequest');
-    }
-    if (samlRequestXMLString) {
-      const callbackURL = getCallbackUrlFromXML(samlRequestXMLString);
-      if (callbackURL) {
-        res.cookie("callbackURL", callbackURL);
-        res.cookie("useADFS", true);
-        return res.status(200).redirect('/auth/saml');
-      }
-      return res.status(500).send('Cannot Establish Callback URL');
-    }
+    return handleSAMLRequest(req, res);
   };
+
+  if (req.query && req.query.wa) {
+    return handleWsFedRequest(req, res);
+  }
+
+  return res.status(500).send('Not a valid SAML Request');
 
 });
 

@@ -66,40 +66,72 @@ const dealWithSAMLuseADFSCallback = async (req, res, next) => {
     const newXml = Buffer.from(newSerializedXml, 'utf8').toString('base64');
 
     const RelayState = req.cookies["RelayState"];
+
+    const createHTMLResponse = (SAMLResponse, callbackURL, RelayState) => {
+        const response =
+            `<html>
+                <body>
+                    <form method="POST" name="hiddenform" action="${callbackURL}">
+                        <input type="hidden" name="SAMLResponse" value="${SAMLResponse}" />
+                        ${ RelayState ? `<input type="hidden" name="RelayState" value="${RelayState}" />` : ''}
+                    </form>
+                    <script language="javascript">
+                        window.setTimeout('document.forms[0].submit()',0);
+                    </script>
+                </body>
+            </html>`
+
+        return response;
+    }
+
     const htlmResponse = createHTMLResponse(newXml, req.cookies["callbackURL"], RelayState);
 
     res.status(200).send(htlmResponse);
 };
 
-const createHTMLResponse = (SAMLResponse, callbackURL, RelayState) => {
-    const response =
-        `<html>
-            <body>
-                <form method="POST" name="hiddenform" action="${callbackURL}">
-                    <input type="hidden" name="SAMLResponse" value="${SAMLResponse}" />
-                    ${ RelayState ? `<input type="hidden" name="RelayState" value="${RelayState}" />` : ''}
-                </form>
-                <script language="javascript">
-                    window.setTimeout('document.forms[0].submit()',0);
-                </script>
-            </body>
-        </html>`
-
-    return response;
-}
 
 
-router.post("/saml", passport.authenticate("saml"), dealWithCallback);
+const handleWsFedResponse = async (req, res, next) => {
+    const generateInputFromParam = (name, value) => `<input type="hidden" name="${name}" value="${value}" />`;
+    const generateHTMLFromBody = body => {
+        let html = '';
+        for (let name in body) {
+            html += generateInputFromParam(name, body[name]);
+        }
+        return html;
+    }
 
-router.post("/saml", passport.authenticate("saml"), dealWithSAMLuseADFSCallback);
+    const createHTMLResponse = (callbackURL) => {
+        const response =
+            `<html>
+                <body>
+                    <form method="POST" name="hiddenform" action="${callbackURL}">
+                        ${generateHTMLFromBody(req.body)}
+                    </form>
+                    <script language="javascript">
+                        window.setTimeout('document.forms[0].submit()',0);
+                    </script>
+                </body>
+            </html>`
+
+        return response;
+    };
+
+    const htlmResponse = createHTMLResponse(req.cookies["callbackURL"]);
+    return res.status(200).send(htlmResponse);
+};
+
+const checkIfResponseIsWsfedOrSaml = async (req, res, next) => (req.body && req.body.wresult) ? handleWsFedResponse(req, res, next) : next();
+
+
+router.post("/saml", checkIfResponseIsWsfedOrSaml, passport.authenticate("saml"), dealWithCallback);
+
+router.post("/saml", checkIfResponseIsWsfedOrSaml, passport.authenticate("saml"), dealWithSAMLuseADFSCallback);
 
 // to adhere to ADFS standards - not allways relavent.
-router.post("/saml/callback", passport.authenticate("saml"), dealWithCallback);
+router.post("/saml/callback", checkIfResponseIsWsfedOrSaml, passport.authenticate("saml"), dealWithCallback);
 
-router.post("/saml/callback", passport.authenticate("saml"), dealWithSAMLuseADFSCallback);
-
-
-
+router.post("/saml/callback", checkIfResponseIsWsfedOrSaml, passport.authenticate("saml"), dealWithSAMLuseADFSCallback);
 
 
 module.exports = router;
