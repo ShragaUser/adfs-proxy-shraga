@@ -222,7 +222,7 @@ window.location = '/logout';
 and then your backend should look like this:
 
 ```
-router.get('/logout', async (req, res, next) => {
+router.get('/logout', (req, res, next) => {
     res.redirect(SHRAGA_URL + '/logout?callbackURL=' + callbackURL);
 })
 ```
