@@ -14,7 +14,6 @@ const configurePassport = require("./passport");
 const auth = require("./routes/auth");
 
 const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
 
 dotenv.config();
 
@@ -37,8 +36,8 @@ async function initApp() {
       )
     );
   });
-  
-  app.use(express.static('docs'));
+
+  app.use(express.static("docs"));
   app.use(helmet());
   app.use(cors());
   app.use(logger("tiny"));
@@ -46,13 +45,13 @@ async function initApp() {
   app.use(cookieParser());
   app.use(
     express.json({
-      limit: "100mb"
+      limit: "100mb",
     })
   );
   app.use(
     express.urlencoded({
       extended: true,
-      limit: "100mb"
+      limit: "100mb",
     })
   );
 
@@ -60,11 +59,11 @@ async function initApp() {
   app.use(
     session({
       store: new MongoStore({
-        db
+        db,
       }),
       secret: process.env.SESSION_SECRET,
       resave: false,
-      saveUninitialized: false
+      saveUninitialized: false,
     })
   );
 
@@ -73,6 +72,9 @@ async function initApp() {
 
   app.use("/", indexRouter);
   app.use("/auth", auth);
+  app.all("/user", (req, res, next) => {
+    return res.json(req.user);
+  });
 }
 
 initApp();

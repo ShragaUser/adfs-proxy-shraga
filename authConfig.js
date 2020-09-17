@@ -1,7 +1,11 @@
 const authConfig = () => {
   const samlResponseModifier = {};
-  samlResponseModifier[(process.env.PROFILE_EXTRACTOR_ID || "uid")] = async (originalValue) => originalValue;
-  samlResponseModifier[(process.env.PROFILE_EXTRACTOR_FIRST_NAME || "email")] = async (originalValue) => `Not ${originalValue}`;
+  samlResponseModifier[process.env.PROFILE_EXTRACTOR_ID || "uid"] = async (
+    originalValue
+  ) => originalValue;
+  samlResponseModifier[
+    process.env.PROFILE_EXTRACTOR_FIRST_NAME || "email"
+  ] = async (originalValue) => `Not ${originalValue}`;
   return {
     required: true,
     secret: process.env.SECRET_KEY || "bLue5tream@2018", // Don't use static value in production! remove from source control!
@@ -17,21 +21,24 @@ const authConfig = () => {
         "http://schemas.microsoft.com/ws/2008/06/identity/authenticationmethod/windows",
       identifierFormat: null,
       signatureAlgorithm: "sha256",
-      acceptedClockSkewMs: -1
+      acceptedClockSkewMs: -1,
     },
     profileExtractor: {
       id: process.env.PROFILE_EXTRACTOR_ID || "uid",
       firstName: process.env.PROFILE_EXTRACTOR_FIRST_NAME || "email",
       lastName: process.env.PROFILE_EXTRACTOR_LAST_NAME || "email",
       email: process.env.PROFILE_EXTRACTOR_MAIL || "email",
-      displayName: process.env.PROFILE_EXTRACTOR_DISPLAY_NAME || "email"
+      displayName: process.env.PROFILE_EXTRACTOR_DISPLAY_NAME || "email",
     },
     samlResponseModifier,
     attributeTagName: process.env.ATTRIBUTE_TAG || "saml:Attribute",
-    samlCallbackUrlTag: process.env.SAML_CALLBACK_URL_TAG || "samlp:AuthnRequest",
-    samlCallbackAttributeName: process.env.SAML_CALLBACK_ATTRIBUTE_NAME || 'AssertionConsumerServiceURL',
+    samlCallbackUrlTag:
+      process.env.SAML_CALLBACK_URL_TAG || "samlp:AuthnRequest",
+    samlCallbackAttributeName:
+      process.env.SAML_CALLBACK_ATTRIBUTE_NAME || "AssertionConsumerServiceURL",
     enrichment: {
-      enrich: async (x, useEnrichId) => {
+      enrich: "http://enrich:3000/",
+      something: async (x, useEnrichId) => {
         const { id, firstName, lastName, email, displayName } = x;
         const name = { firstName, lastName };
         let provider = "ADFS";
@@ -40,9 +47,9 @@ const authConfig = () => {
           name,
           email,
           displayName,
-          provider
+          provider,
         };
-      }
+      },
       //ideally after enrichment user should be similar to this schema:
       //     provider {String}
       // The provider with which the user authenticated (facebook, twitter, etc.).
@@ -65,10 +72,8 @@ const authConfig = () => {
       // photos {Array} [n]
       // value {String}
       // The URL of the image.
-    }
-  }
+    },
+  };
 };
-
-
 
 module.exports = authConfig;
