@@ -91,4 +91,11 @@ router.get('/saml', async (req, res, next) => {
 
 });
 
+router.all('/logout', (req ,res, next) => {
+  for(let cookie in req.cookies) 
+      res.cookie(cookie, '', {expires: new Date(0)});
+
+  return res.redirect(307, `${req.cookies["callbackURL"]}`);
+});
+
 module.exports = router;
