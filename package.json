@@ -20,7 +20,7 @@
     "morgan": "~1.9.0",
     "njwt": "^1.0.0",
     "passport": "^0.4.0",
-    "passport-saml": "^1.0.0",
+    "passport-saml": "^3.1.0",
     "ramda": "^0.26.1",
     "secure-random": "^1.1.1"
   },
